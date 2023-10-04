@@ -21,6 +21,7 @@ class CryptoPrice(BaseModel):
         ..., examples=["BTC"], description="The cryptocurrency"
     )
 
+publisher = broker.publisher("new_crypto_price")
 
 async def fetch_crypto_price(
     url: str, crypto_currency: str, logger: Logger, context: ContextRepo, time_interval: int = 2
@@ -35,9 +36,8 @@ async def fetch_crypto_price(
                     new_crypto_price = CryptoPrice(
                         price=price, crypto_currency=crypto_currency
                     )
-                    await broker.publish(
+                    await publisher.publish(
                         new_crypto_price,
-                        "new_crypto_price",
                         key=crypto_currency.encode("utf-8"),
                     )
                 else:
